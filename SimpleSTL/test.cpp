@@ -44,7 +44,7 @@ int main()
 	sss.Clear();*/
 
 
-	Deque<aa*> l;
+	/*Deque<aa*> l;
 	l.PushBack(new aa());
 	l.PushFront(new aa());
 	cout << (*l.Back())->a << endl;
@@ -103,8 +103,14 @@ int main()
 	cout << q.Size() << endl;
 	q.PopBack();
 	cout << q.Back()->a << endl;
-	cout << q.Size() << endl;
+	cout << q.Size() << endl;*/
 
+	RB_Tree t;
+	t.Insert(1);
+	t.Insert(2);
+
+	cout << **(t.Root) << endl;
+	cout << **(t.Root->Right) << endl;
 
 	getchar();
 	return 0;

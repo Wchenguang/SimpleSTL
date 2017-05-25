@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <cstdio>
 
 #define OUTOFRANGE std::cerr << "Out Of Range" << std::endl
 
@@ -38,10 +39,10 @@ namespace simpleSTL
 			DequeBase->Last = DequeBase; DequeBase->Next = DequeBase;
 			_Size = 0;
 		}
-		void Copy(const Deque<DequeItem> &Deque)
+		void Copy(const Deque<DequeItem> &deque)
 		{
-			DequeNode<DequeItem> *t = Deque.DequeBase->Last;
-			for (size_t i = 0; i < Deque.Size(); PushBack(t->Item), t = t->Last, ++i);
+			DequeNode<DequeItem> *t = deque.DequeBase->Last;
+			for (size_t i = 0; i < deque.Size(); PushBack(t->Item), t = t->Last, ++i);
 		}
 	public:
 		typedef DequeNode<DequeItem> Iterator;
@@ -49,10 +50,10 @@ namespace simpleSTL
 		{
 			Construct();
 		}
-		Deque(const Deque<DequeItem> &Deque)
+		Deque(const Deque<DequeItem> &deque)
 		{
 			Construct();
-			Copy(Deque);
+			Copy(deque);
 		}
 		void PushFront(const DequeItem &item)
 		{
@@ -208,5 +209,63 @@ namespace simpleSTL
 		{
 			_Clear();
 		}
+	};
+
+	typedef double RBTItem;
+	typedef double RBTItem;
+
+#define RBT_RED false
+#define RBT_BLACK true
+
+	class RBTNode
+	{
+	public:
+		RBTItem Item;
+		size_t Rank;
+		bool Flag;
+		RBTNode *Left, *Right, *fa;
+		RBTNode() : Rank(0), Flag(RBT_RED), Left(0), Right(0), fa(0) {}
+		RBTItem &operator * () { return Item; }
+		void Copy(const RBTItem &item) { Item = item; }
+	};
+
+	class RB_Tree
+	{
+	public:
+		size_t _Size;
+		RBTNode *Root;
+		void BST_Insert(RBTNode **root, RBTNode *node)
+		{
+			RBTNode *t = *root, *temp = t;
+			while (0 != t)
+			{
+				temp = t;
+				if (t->Item > node->Item) { root = &(t->Left); t = t->Left;  }
+				else { root = &(t->Right); t = t->Right; }
+			}
+			*root = node; node->fa = temp;
+		}
+		void _LeftRotate(RBTNode *node)
+		{
+
+		}
+		void _RightRotate(RBTNode *node)
+		{
+
+		}
+		void _RBT_InsertFixUp(RBTNode *node)
+		{
+
+		}
+	public:
+		RB_Tree() : _Size(0), Root(0){}
+		void Insert(const RBTItem &item)
+		{
+			RBTNode *temp = new RBTNode();
+			temp->Copy(item);
+			BST_Insert(&Root, temp);
+			_RBT_InsertFixUp(temp);
+		}
+		
 	};
 }
