@@ -233,39 +233,150 @@ namespace simpleSTL
 	{
 	public:
 		size_t _Size;
-		RBTNode *Root;
 		void BST_Insert(RBTNode **root, RBTNode *node)
 		{
 			RBTNode *t = *root, *temp = t;
 			while (0 != t)
 			{
 				temp = t;
-				if (t->Item > node->Item) { root = &(t->Left); t = t->Left;  }
+				if (node->Item < t->Item ) { root = &(t->Left); t = t->Left;  }
 				else { root = &(t->Right); t = t->Right; }
 			}
 			*root = node; node->fa = temp;
 		}
-		void _LeftRotate(RBTNode *node)
+		void _LeftRotate(RBTNode *y)
 		{
-
+			RBTNode *x = y->fa, *yl = y->Left, *yr = y->Right;
+			x->Right = y->Left; if (yl) yl->fa = x;
+			y->fa = x->fa;
+			if (0 == x->fa)
+				Root = y;
+			else if (x->fa->Right == x)
+				x->fa->Right = y;
+			else
+				x->fa->Left = y;
+			y->Left = x; x->fa = y;
 		}
-		void _RightRotate(RBTNode *node)
+		void _RightRotate(RBTNode *y)
 		{
-
+			RBTNode *x = y->fa, *yl = y->Left, *yr = y->Right;
+			x->Left = y->Right; if (yr) yr->fa = x;
+			y->fa = x->fa;
+			if (0 == x->fa)
+				Root = y;
+			else if (x->fa->Right == x)
+				x->fa->Right = y;
+			else
+				x->fa->Left = y;
+			y->Right = x; x->fa = y;
 		}
 		void _RBT_InsertFixUp(RBTNode *node)
 		{
-
+			while (0 != node->fa && RBT_RED == node->fa->Flag)
+			{
+				if (node->fa->fa->Left == node->fa)
+				{
+					RBTNode *u = node->fa->fa->Right;
+					if (RBT_RED == u->Flag)
+					{
+						node->fa->Flag = RBT_BLACK;
+						u->Flag = RBT_BLACK;
+						node->fa->fa->Flag = RBT_RED;
+						node = node->fa->fa;
+					}
+					else if (node == node->fa->Right)
+					{
+						node = node->fa;
+						_LeftRotate(node);
+					}
+					else
+					{
+						node->fa->Flag = RBT_BLACK;
+						node->fa->fa->Flag = RBT_RED;
+						_RightRotate(node->fa->fa);
+					}
+				}
+				else
+				{
+					RBTNode *u = node->fa->fa->Left;
+					if (RBT_RED == u->Flag)
+					{
+						u->Flag = RBT_BLACK;
+						node->fa->Flag = RBT_BLACK;
+						node->fa->fa->Flag = RBT_RED;
+						node = node->fa->fa;
+					}
+					else if (node == node->fa->Left)
+					{
+						node = node->fa;
+						_RightRotate(node);
+					}
+					else
+					{
+						node->fa->fa->Flag = RBT_RED;
+						node->fa->Flag = RBT_BLACK;
+						_LeftRotate(node->fa->fa);
+					}
+				}
+			}
+			Root->Flag = RBT_BLACK;
+		}
+		void _Clear(RBTNode *root)
+		{
+			if (root)
+			{
+				_Clear(root->Left);
+				_Clear(root->Right);
+				delete root;
+			}
+		}
+		RBTNode *_Search(const RBTItem &item)
+		{
+			RBTNode *t;
+			for (t = Root; t != 0;)
+				if (item == t->Item)
+					break;
+				else if (item < t->Item)
+					t = t->Left;
+				else
+					t = t->Right;
+			return t;
 		}
 	public:
+		typedef RBTNode Iterator;
+		RBTNode *Root;
 		RB_Tree() : _Size(0), Root(0){}
-		void Insert(const RBTItem &item)
+		~RB_Tree() { _Clear(Root); }
+		RBTNode &Insert(const RBTItem &item)
 		{
 			RBTNode *temp = new RBTNode();
 			temp->Copy(item);
 			BST_Insert(&Root, temp);
 			_RBT_InsertFixUp(temp);
+			++_Size;
+			return *temp;
 		}
-		
+		RBTNode &Search(const RBTItem &item)
+		{
+			RBTNode *temp;
+			if (0 == (temp = _Search(item)))
+				std::cerr << "not found" << std::endl;
+			else
+				return *temp;
+		}
+		void Delete(const RBTItem &item)
+		{
+			RBTNode *temp = _Search(item);
+			if (temp)
+			{
+
+				return;
+			}
+			std::cerr<< "not found" << std::endl;
+		}
+		size_t Size()
+		{
+			return _Size;
+		}
 	};
 }

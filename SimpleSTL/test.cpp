@@ -109,6 +109,8 @@ int main()
 	t.Insert(1);
 	t.Insert(2);
 
+	cout << *t.Search(4) << endl;
+
 	cout << **(t.Root) << endl;
 	cout << **(t.Root->Right) << endl;
 
